@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './src/types';
-import HomeScreen from './src/screens/HomeScreen';
+import HomeScreen from './src/screens/HomeScreen/HomeScreen';
 import LoadingScreen from './src/screens/LoadingScreen';
 import ResultsScreen from './src/screens/ResultsScreen';
 import ReservationScreen from './src/screens/ReservationScreen';
