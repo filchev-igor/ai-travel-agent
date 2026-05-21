@@ -31,7 +31,7 @@ Respond ONLY with valid JSON, no markdown, no explanation. Format:
     }
   ]
 }
-Keep all costs realistic and within the $${budget} budget. Use USD.`;
+Keep all costs realistic and within the €${budget} budget. Use EUR.`;
 };
 
 const generateFallback = (tripData: TripData): TripVariant[] => {
