@@ -2,11 +2,11 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './src/types';
-import HomeScreen from './src/screens/HomeScreen/HomeScreen';
-import LoadingScreen from './src/screens/LoadingScreen';
-import ResultsScreen from './src/screens/ResultsScreen';
-import ReservationScreen from './src/screens/ReservationScreen';
-import SuccessScreen from './src/screens/SuccessScreen';
+import HomeScreen from '@screens/HomeScreen/HomeScreen';
+import LoadingScreen from '@screens/LoadingScreen/LoadingScreen';
+import ResultsScreen from '@screens/ResultsScreen';
+import ReservationScreen from '@screens/ReservationScreen';
+import SuccessScreen from '@screens/SuccessScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

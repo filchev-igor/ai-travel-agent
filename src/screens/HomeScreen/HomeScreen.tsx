@@ -7,14 +7,13 @@ import {
   Modal,
   FlatList,
   TouchableOpacity,
-  Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Search } from 'lucide-react-native';
 import LocationInputs from './LocationInputs';
 import DateInputs from './DateInputs';
 import DropdownInput from './DropdownInput';
-import AppLogo from '../../components/AppLogo';
+import Header from '../../components/Header';
 import { useHomeScreen } from './useHomeScreen';
 import { GROUP_OPTIONS, BUDGET_OPTIONS, getGroupLabel, getBudgetLabel } from './constants';
 
@@ -81,14 +80,7 @@ const HomeScreen = () => {
 
   return (
       <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <AppLogo width={132} height={60} />
-          <Image
-              source={{ uri: 'https://via.placeholder.com/80' }}
-              style={styles.avatar}
-          />
-        </View>
+        <Header />
 
         <ScrollView
             style={styles.body}
@@ -166,21 +158,6 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2ED',
-  },
-  header: {
-    backgroundColor: '#0C1445',
-    paddingHorizontal: 10,
-    paddingVertical: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 100,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 100,
     backgroundColor: '#F2F2ED',
   },
   body: {
