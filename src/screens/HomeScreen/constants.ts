@@ -24,3 +24,17 @@ export const getBudgetLabel = (value: string): string => {
     const num = parseInt(value);
     return `Up to €${num.toLocaleString()}`;
 };
+
+// Add this to your existing constants.ts file
+export const EUROPEAN_COUNTRY_CODES = [
+    // EU Countries
+    'at', 'be', 'bg', 'hr', 'cy', 'cz', 'dk', 'ee', 'fi', 'fr', 'de', 'gr',
+    'hu', 'ie', 'it', 'lv', 'lt', 'lu', 'mt', 'nl', 'pl', 'pt', 'ro', 'sk',
+    'si', 'es', 'se',
+    // Non-EU
+    'ch', 'no', 'is', 'gb',
+    // Balkan
+    'al', 'ba', 'mk', 'me', 'rs', 'xk',
+    // Additional
+    'md', 'tr'
+];
