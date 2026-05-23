@@ -73,10 +73,10 @@ const LoadingScreen = ({ route, navigation }: Props) => {
     outputRange: ['0%', '100%'],
   });
 
-  // Get group display text
+  // Get group display text - Updated for max 6 people
   const getGroupDisplay = (group: string): string => {
-    if (group === '6') return '6+ people';
-    return `${group} ${parseInt(group) === 1 ? 'person' : 'people'}`;
+    const num = parseInt(group);
+    return `${num} ${num === 1 ? 'person' : 'people'}`;
   };
 
   return (
@@ -104,7 +104,7 @@ const LoadingScreen = ({ route, navigation }: Props) => {
             <SummaryRow label="Start date" value={formatDate(tripData.startDate)} />
             <SummaryRow label="End date" value={formatDate(tripData.endDate)} />
             <SummaryRow label="People in group" value={getGroupDisplay(tripData.group)} />
-            <SummaryRow label="Budget" value={`$${tripData.budget}`} />
+            <SummaryRow label="Budget" value={`€${tripData.budget}`} />  {/* Changed $ to € */}
           </View>
           <View style={styles.progressWrap}>
             <Text style={styles.progressLabel}>{LABELS[labelIndex]}</Text>
