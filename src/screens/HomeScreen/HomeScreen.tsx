@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Modal, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Modal, FlatList, TouchableOpacity, Image } from 'react-native';
 import LocationInputs from './LocationInputs';
 import DateInputs from './DateInputs';
 import DropdownInput from './DropdownInput';
@@ -64,16 +64,20 @@ const HomeScreen = () => {
 
   return (
       <View style={styles.container}>
+        {/* Header - Figma design */}
         <View style={styles.header}>
-          <View style={styles.headerLogo}>
-            <View style={styles.headerIcon}>
-              <Text style={styles.headerIconText}>🧳</Text>
+          <View style={styles.logoContainer}>
+            <View style={styles.logoIcon}>
+              {/* Custom SVG logo - using emoji as placeholder, replace with actual icon */}
+              <Text style={styles.logoIconText}>✈️</Text>
             </View>
-            <Text style={styles.headerTitle}>AI travel{'\n'}agent</Text>
+            <Text style={styles.logoText}>AI travel agent</Text>
           </View>
-          <View style={styles.avatar}>
-            <Text>👤</Text>
-          </View>
+          <Image
+              source={{ uri: 'https://via.placeholder.com/80' }}
+              style={styles.avatar}
+              // You can replace with actual image: require('./assets/avatar.png')
+          />
         </View>
 
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
@@ -97,23 +101,24 @@ const HomeScreen = () => {
           />
 
           <DropdownInput
-              label="People in group"
-              placeholder="How many people in a group?"
+              label="How many people in a group?"
+              placeholder="Select a value"
               selectedValue={groupSize}
               onPress={() => setGroupModalVisible(true)}
               displayText={groupSize ? getGroupLabel(groupSize) : ''}
           />
 
           <DropdownInput
-              label="Budget"
-              placeholder="Select an applicable budget?"
+              label="Select an applicable budget?"
+              placeholder="Select a value"
               selectedValue={budget}
               onPress={() => setBudgetModalVisible(true)}
               displayText={budget ? getBudgetLabel(budget) : ''}
           />
 
           <TouchableOpacity style={styles.button} onPress={onCombinePress}>
-            <Text style={styles.buttonText}>Combine journey 🔍</Text>
+            <Text style={styles.buttonText}>Combine journey</Text>
+            <Text style={styles.buttonIcon}>🔍</Text>
           </TouchableOpacity>
           <View style={{ height: 30 }} />
         </ScrollView>
@@ -125,58 +130,92 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f4f6fb' },
+  container: {
+    flex: 1,
+    backgroundColor: '#F2F2ED',  // Figma background
+  },
   header: {
-    backgroundColor: '#1a2340',
-    padding: 14,
+    backgroundColor: '#0C1445',  // Figma header color
+    paddingHorizontal: 10,
+    paddingVertical: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    height: 100,
   },
-  headerLogo: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  headerIcon: {
-    width: 38,
-    height: 38,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: 10,
+  logoContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#F2F2ED',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    width: 132,
+    height: 60,
   },
-  headerIconText: { fontSize: 18 },
-  headerTitle: {
-    color: '#ffffff',
-    fontSize: 13,
-    fontWeight: '600',
-    lineHeight: 18,
+  logoIcon: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoIconText: {
+    fontSize: 28,
+    color: '#0C1445',
+  },
+  logoText: {
+    fontFamily: 'Inter',
+    fontWeight: '700',
+    fontSize: 16,
+    lineHeight: 19,
+    textAlign: 'center',
+    color: '#0C1445',
+    flex: 1,
   },
   avatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: '#667eea',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: 80,
+    height: 80,
+    borderRadius: 100,
+    backgroundColor: '#F2F2ED',
   },
-  body: { flex: 1, padding: 20 },
+  body: {
+    flex: 1,
+    paddingHorizontal: 25,
+    paddingTop: 10,
+  },
   subtitle: {
-    fontSize: 14,
-    color: '#4a5568',
+    fontFamily: 'Inter',
+    fontWeight: '600',
+    fontSize: 16,
+    lineHeight: 19,
+    color: '#000000',
     marginBottom: 20,
-    lineHeight: 20,
+    marginTop: 10,
   },
   button: {
-    backgroundColor: '#e91e8c',
-    borderRadius: 14,
-    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    padding: 10,
+    gap: 10,
+    width: '100%',
+    height: 44,
+    backgroundColor: '#D000FF',  // Fallback
+    backgroundGradient: 'linear-gradient(90deg, #FFBABA 0%, #D000FF 100%)',
+    borderRadius: 4,
     marginTop: 24,
-    shadowColor: '#e91e8c',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    elevation: 6,
   },
-  buttonText: { color: '#ffffff', fontSize: 15, fontWeight: '700' },
+  buttonText: {
+    fontFamily: 'Inter',
+    fontWeight: '600',
+    fontSize: 16,
+    lineHeight: 19,
+    color: '#F2F2ED',
+  },
+  buttonIcon: {
+    fontSize: 16,
+    color: '#F2F2ED',
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -184,40 +223,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 20,
+    backgroundColor: '#F2F2ED',
+    borderRadius: 4,
     padding: 20,
     width: '80%',
     maxHeight: '70%',
   },
   modalTitle: {
-    fontSize: 18,
+    fontFamily: 'Inter',
+    fontSize: 16,
     fontWeight: '600',
-    color: '#1a2340',
+    color: '#0C1445',
     textAlign: 'center',
     marginBottom: 20,
   },
   modalOption: {
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: '#69425F',
   },
   modalOptionText: {
-    fontSize: 16,
-    color: '#1a2340',
+    fontFamily: 'Inter',
+    fontSize: 14,
+    color: '#0C1445',
     textAlign: 'center',
   },
   modalCloseBtn: {
     marginTop: 15,
     paddingVertical: 12,
-    backgroundColor: '#e2e8f0',
-    borderRadius: 10,
+    backgroundColor: '#0C1445',
+    borderRadius: 4,
   },
   modalCloseBtnText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
-    color: '#4a5568',
+    color: '#F2F2ED',
   },
 });
 
