@@ -10,16 +10,9 @@ export const useHomeScreen = () => {
     const [startLocation, setStartLocation] = useState('');
     const [endLocation, setEndLocation] = useState('');
 
-    const [startDate, setStartDate] = useState(() => {
-        const date = new Date();
-        date.setDate(date.getDate() + 7);
-        return date.toISOString().split('T')[0];
-    });
-    const [endDate, setEndDate] = useState(() => {
-        const date = new Date();
-        date.setDate(date.getDate() + 14);
-        return date.toISOString().split('T')[0];
-    });
+    // Allow empty dates initially (no default values)
+    const [startDate, setStartDate] = useState<string>('');
+    const [endDate, setEndDate] = useState<string>('');
 
     const [groupModalVisible, setGroupModalVisible] = useState(false);
     const [budgetModalVisible, setBudgetModalVisible] = useState(false);
@@ -27,6 +20,7 @@ export const useHomeScreen = () => {
     const [budget, setBudget] = useState('');
 
     const formatDisplayDate = (dateStr: string): string => {
+        if (!dateStr) return '';
         const d = new Date(dateStr);
         return d.toLocaleDateString('en-GB', {
             day: '2-digit',
@@ -38,6 +32,12 @@ export const useHomeScreen = () => {
     const onCombinePress = () => {
         if (!startLocation || !endLocation) {
             return Alert.alert('Missing info', 'Enter start and end location');
+        }
+        if (!startDate) {
+            return Alert.alert('Missing info', 'Select start date');
+        }
+        if (!endDate) {
+            return Alert.alert('Missing info', 'Select end date');
         }
         if (!groupSize) {
             return Alert.alert('Missing info', 'Select group size');

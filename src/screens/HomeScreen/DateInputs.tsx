@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 type Props = {
@@ -10,6 +10,12 @@ type Props = {
 };
 
 const DateInputs = ({ startDate, endDate, onStartDateChange, onEndDateChange, formatDisplayDate }: Props) => {
+    // Get today's date in YYYY-MM-DD format for the min attribute
+    const getTodayDate = () => {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    };
+
     const handleDateChange = (setter: (date: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setter(e.target.value);
     };
@@ -28,12 +34,15 @@ const DateInputs = ({ startDate, endDate, onStartDateChange, onEndDateChange, fo
                     activeOpacity={0.7}
                     onPress={() => showDatePicker('startDateInput')}
                 >
-                    <Text style={styles.dateText}>{formatDisplayDate(startDate)}</Text>
+                    <Text style={!startDate ? styles.placeholderText : styles.dateText}>
+                        {startDate ? formatDisplayDate(startDate) : 'Select start date'}
+                    </Text>
                     <input
                         id="startDateInput"
                         type="date"
-                        value={startDate}
+                        value={startDate || ''}
                         onChange={handleDateChange(onStartDateChange)}
+                        min={getTodayDate()}
                         style={{
                             position: 'absolute',
                             opacity: 0,
@@ -53,12 +62,15 @@ const DateInputs = ({ startDate, endDate, onStartDateChange, onEndDateChange, fo
                     activeOpacity={0.7}
                     onPress={() => showDatePicker('endDateInput')}
                 >
-                    <Text style={styles.dateText}>{formatDisplayDate(endDate)}</Text>
+                    <Text style={!endDate ? styles.placeholderText : styles.dateText}>
+                        {endDate ? formatDisplayDate(endDate) : 'Select end date'}
+                    </Text>
                     <input
                         id="endDateInput"
                         type="date"
-                        value={endDate}
+                        value={endDate || ''}
                         onChange={handleDateChange(onEndDateChange)}
+                        min={startDate || getTodayDate()}
                         style={{
                             position: 'absolute',
                             opacity: 0,
@@ -96,10 +108,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'relative',
         cursor: 'pointer',
+        minHeight: 50,
     },
     dateText: {
         fontSize: 14,
         color: '#1a2340',
+    },
+    placeholderText: {
+        fontSize: 14,
+        color: '#8a9bb5',
     },
 });
 
