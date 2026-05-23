@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, TextInput } from 'react-native';
+import { ChevronDown } from 'lucide-react-native';
 import { EUROPEAN_COUNTRY_CODES } from './constants';
 
 const searchCities = async (query: string, countryCodes: string[]): Promise<any[]> => {
@@ -51,6 +52,7 @@ const LocationInputs = ({ startLocation, endLocation, onStartChange, onEndChange
 
     useEffect(() => {
         if (!activeField) return;
+
         const timer = setTimeout(async () => {
             if (searchQuery.length >= 2) {
                 setIsLoading(true);
@@ -61,6 +63,7 @@ const LocationInputs = ({ startLocation, endLocation, onStartChange, onEndChange
                 setSuggestions([]);
             }
         }, 300);
+
         return () => clearTimeout(timer);
     }, [searchQuery, activeField]);
 
@@ -79,12 +82,25 @@ const LocationInputs = ({ startLocation, endLocation, onStartChange, onEndChange
         setSuggestions([]);
     };
 
+    const openModal = (field: 'start' | 'end') => {
+        setActiveField(field);
+        setSearchQuery('');
+        setSuggestions([]);
+    };
+
+    const closeModal = () => {
+        setActiveField(null);
+        setSearchQuery('');
+        setSuggestions([]);
+    };
+
     const renderSuggestion = ({ item }: { item: any }) => {
         let cityName = item.address?.city || item.name;
         let countryName = item.address?.country || '';
         let regionName = item.address?.state || item.address?.region || '';
         cityName = cityName.split('(')[0].trim();
         let secondaryText = regionName && regionName !== cityName ? `${regionName}, ${countryName}` : countryName;
+
         return (
             <TouchableOpacity style={styles.suggestionItem} onPress={() => handleLocationSelect(activeField!, item)}>
                 <Text style={styles.suggestionCity}>{cityName}</Text>
@@ -95,32 +111,26 @@ const LocationInputs = ({ startLocation, endLocation, onStartChange, onEndChange
 
     return (
         <View>
-            <TouchableOpacity style={styles.selector} onPress={() => setActiveField('start')}>
+            <TouchableOpacity style={styles.selector} onPress={() => openModal('start')}>
                 <Text style={startLocation ? styles.selectedText : styles.placeholderText}>
                     {startLocation || 'Start location'}
                 </Text>
-                <View style={styles.arrowIcon}>
-                    <View style={styles.arrowUp} />
-                    <View style={styles.arrowDown} />
-                </View>
+                <ChevronDown size={16} color="#0C1445" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.selector} onPress={() => setActiveField('end')}>
+            <TouchableOpacity style={styles.selector} onPress={() => openModal('end')}>
                 <Text style={endLocation ? styles.selectedText : styles.placeholderText}>
                     {endLocation || 'End location'}
                 </Text>
-                <View style={styles.arrowIcon}>
-                    <View style={styles.arrowUp} />
-                    <View style={styles.arrowDown} />
-                </View>
+                <ChevronDown size={16} color="#0C1445" />
             </TouchableOpacity>
 
-            <Modal visible={activeField !== null} animationType="slide" transparent onRequestClose={() => setActiveField(null)}>
+            <Modal visible={activeField !== null} animationType="slide" transparent onRequestClose={closeModal}>
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
                         <View style={styles.modalHeader}>
                             <Text style={styles.modalTitle}>{activeField === 'start' ? 'Select start city' : 'Select end city'}</Text>
-                            <TouchableOpacity onPress={() => setActiveField(null)}>
+                            <TouchableOpacity onPress={closeModal}>
                                 <Text style={styles.modalCloseText}>✕</Text>
                             </TouchableOpacity>
                         </View>
@@ -176,24 +186,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         lineHeight: 15,
         color: '#0C1445',
-    },
-    arrowIcon: {
-        width: 24,
-        height: 24,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    arrowUp: {
-        width: 10,
-        height: 2,
-        backgroundColor: '#000000',
-        marginBottom: 4,
-    },
-    arrowDown: {
-        width: 10,
-        height: 2,
-        backgroundColor: '#000000',
-        marginTop: 4,
     },
     modalOverlay: {
         flex: 1,

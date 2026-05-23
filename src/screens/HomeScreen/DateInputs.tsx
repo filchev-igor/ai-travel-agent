@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ChevronDown } from 'lucide-react-native';
 
 type Props = {
     startDate: string;
@@ -27,10 +28,7 @@ const DateInputs = ({ startDate, endDate, onStartDateChange, onEndDateChange, fo
                 <Text style={!startDate ? styles.placeholderText : styles.selectedText}>
                     {startDate ? formatDisplayDate(startDate) : 'Start date'}
                 </Text>
-                <View style={styles.arrowIcon}>
-                    <View style={styles.arrowUp} />
-                    <View style={styles.arrowDown} />
-                </View>
+                <ChevronDown size={16} color="#0C1445" />
                 <input
                     id="startDateInput"
                     type="date"
@@ -45,10 +43,7 @@ const DateInputs = ({ startDate, endDate, onStartDateChange, onEndDateChange, fo
                 <Text style={!endDate ? styles.placeholderText : styles.selectedText}>
                     {endDate ? formatDisplayDate(endDate) : 'End date'}
                 </Text>
-                <View style={styles.arrowIcon}>
-                    <View style={styles.arrowUp} />
-                    <View style={styles.arrowDown} />
-                </View>
+                <ChevronDown size={16} color="#0C1445" />
                 <input
                     id="endDateInput"
                     type="date"
@@ -91,9 +86,6 @@ const styles = StyleSheet.create({
         lineHeight: 15,
         color: '#0C1445',
     },
-    arrowIcon: { width: 24, height: 24, justifyContent: 'center', alignItems: 'center' },
-    arrowUp: { width: 10, height: 2, backgroundColor: '#000000', marginBottom: 4 },
-    arrowDown: { width: 10, height: 2, backgroundColor: '#000000', marginTop: 4 },
 });
 
 export default DateInputs;

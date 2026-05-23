@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ChevronDown } from 'lucide-react-native';
 
 type Props = {
     label: string;
@@ -14,10 +15,7 @@ const DropdownInput = ({ label, placeholder, selectedValue, onPress, displayText
         <Text style={selectedValue ? styles.selectedText : styles.placeholderText}>
             {displayText || placeholder}
         </Text>
-        <View style={styles.arrowIcon}>
-            <View style={styles.arrowUp} />
-            <View style={styles.arrowDown} />
-        </View>
+        <ChevronDown size={16} color="#0C1445" />
     </TouchableOpacity>
 );
 
@@ -50,9 +48,6 @@ const styles = StyleSheet.create({
         lineHeight: 15,
         color: '#0C1445',
     },
-    arrowIcon: { width: 24, height: 24, justifyContent: 'center', alignItems: 'center' },
-    arrowUp: { width: 10, height: 2, backgroundColor: '#000000', marginBottom: 4 },
-    arrowDown: { width: 10, height: 2, backgroundColor: '#000000', marginTop: 4 },
 });
 
 export default DropdownInput;
