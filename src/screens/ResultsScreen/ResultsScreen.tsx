@@ -2,9 +2,10 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { ChevronLeft, Users, DollarSign, Edit2 } from 'lucide-react-native';
-import { RootStackParamList, TripVariant } from '@/types';
+import { Users, DollarSign, Edit2 } from 'lucide-react-native';
+import { RootStackParamList, TripVariant } from '../../types';
 import Header from '../../components/Header';
+import Stepper from '../../components/Stepper';
 import TripCard from '../../components/TripCard';
 
 type Props = {
@@ -19,7 +20,6 @@ const ResultsScreen = ({ route, navigation }: Props) => {
     navigation.navigate('Reservation', { tripData, variant });
   };
 
-  // Format date for display
   const formatShortDate = (dateStr: string): string => {
     const d = new Date(dateStr);
     return d.toLocaleDateString('en-GB', {
@@ -27,6 +27,12 @@ const ResultsScreen = ({ route, navigation }: Props) => {
       month: 'short',
     });
   };
+
+  const steps = [
+    { label: 'Browse journeys', sublabel: 'Browse journeys' },
+    { label: 'Journey reserve and details', sublabel: 'Journey reserve\nand details' },
+    { label: 'Book a journey', sublabel: 'Book a\njourney' },
+  ];
 
   return (
       <View style={styles.container}>
@@ -56,29 +62,8 @@ const ResultsScreen = ({ route, navigation }: Props) => {
             </View>
           </TouchableOpacity>
 
-          {/* Stepper */}
-          <View style={styles.stepper}>
-            <View style={styles.stepItem}>
-              <View style={[styles.stepCircle, styles.stepActive]}>
-                <View style={styles.stepInner} />
-              </View>
-              <Text style={[styles.stepLabel, styles.stepLabelActive]}>Browse journeys</Text>
-            </View>
-            <View style={styles.stepLine} />
-            <View style={styles.stepItem}>
-              <View style={styles.stepCircle}>
-                <View style={styles.stepInner} />
-              </View>
-              <Text style={styles.stepLabel}>Journey reserve{'\n'}and details</Text>
-            </View>
-            <View style={styles.stepLine} />
-            <View style={styles.stepItem}>
-              <View style={styles.stepCircle}>
-                <View style={styles.stepInner} />
-              </View>
-              <Text style={styles.stepLabel}>Book a{'\n'}journey</Text>
-            </View>
-          </View>
+          {/* Stepper - Step 1 active */}
+          <Stepper steps={steps} currentStep={1} />
 
           {/* Trip Cards */}
           {variants.map((variant, index) => (
@@ -101,7 +86,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 40,
   },
-  // Trip Summary Bar
   tripBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -145,53 +129,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 15,
     color: '#0C1445',
-  },
-  // Stepper
-  stepper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  stepItem: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  stepCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#0C1445',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  stepInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'transparent',
-  },
-  stepActive: {
-    backgroundColor: '#0C1445',
-  },
-  stepLabel: {
-    fontFamily: 'Inter',
-    fontWeight: '300',
-    fontSize: 10,
-    lineHeight: 12,
-    color: '#0C1445',
-    textAlign: 'center',
-  },
-  stepLabelActive: {
-    fontWeight: '600',
-  },
-  stepLine: {
-    flex: 1,
-    height: 2,
-    backgroundColor: '#0C1445',
-    marginBottom: 20,
   },
 });
 

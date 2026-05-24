@@ -25,7 +25,7 @@ const DateInputs = ({ startDate, endDate, onStartDateChange, onEndDateChange, fo
     return (
         <>
             <TouchableOpacity style={styles.selector} onPress={() => showDatePicker('startDateInput')}>
-                <Text style={!startDate ? styles.placeholderText : styles.selectedText}>
+                <Text style={startDate ? styles.selectedText : styles.placeholderText}>
                     {startDate ? formatDisplayDate(startDate) : 'Start date'}
                 </Text>
                 <ChevronDown size={16} color="#0C1445" />
@@ -40,7 +40,7 @@ const DateInputs = ({ startDate, endDate, onStartDateChange, onEndDateChange, fo
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.selector} onPress={() => showDatePicker('endDateInput')}>
-                <Text style={!endDate ? styles.placeholderText : styles.selectedText}>
+                <Text style={endDate ? styles.selectedText : styles.placeholderText}>
                     {endDate ? formatDisplayDate(endDate) : 'End date'}
                 </Text>
                 <ChevronDown size={16} color="#0C1445" />
@@ -74,14 +74,14 @@ const styles = StyleSheet.create({
     },
     placeholderText: {
         fontFamily: 'Inter',
-        fontWeight: '400',
+        fontWeight: '400' as const,
         fontSize: 12,
         lineHeight: 15,
         color: '#0C1445',
     },
     selectedText: {
         fontFamily: 'Inter',
-        fontWeight: '400',
+        fontWeight: '700' as const,
         fontSize: 12,
         lineHeight: 15,
         color: '#0C1445',

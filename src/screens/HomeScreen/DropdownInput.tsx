@@ -10,14 +10,16 @@ type Props = {
     displayText: string;
 };
 
-const DropdownInput = ({ label, placeholder, selectedValue, onPress, displayText }: Props) => (
-    <TouchableOpacity style={styles.selector} onPress={onPress}>
-        <Text style={selectedValue ? styles.selectedText : styles.placeholderText}>
-            {displayText || placeholder}
-        </Text>
-        <ChevronDown size={16} color="#0C1445" />
-    </TouchableOpacity>
-);
+const DropdownInput = ({ label, placeholder, selectedValue, onPress, displayText }: Props) => {
+    return (
+        <TouchableOpacity style={styles.selector} onPress={onPress}>
+            <Text style={selectedValue ? styles.selectedText : styles.placeholderText}>
+                {displayText || placeholder}
+            </Text>
+            <ChevronDown size={16} color="#0C1445" />
+        </TouchableOpacity>
+    );
+};
 
 const styles = StyleSheet.create({
     selector: {
@@ -36,14 +38,14 @@ const styles = StyleSheet.create({
     },
     placeholderText: {
         fontFamily: 'Inter',
-        fontWeight: '400',
+        fontWeight: '400' as const,
         fontSize: 12,
         lineHeight: 15,
         color: '#0C1445',
     },
     selectedText: {
         fontFamily: 'Inter',
-        fontWeight: '400',
+        fontWeight: '700' as const,
         fontSize: 12,
         lineHeight: 15,
         color: '#0C1445',

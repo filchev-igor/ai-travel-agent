@@ -109,7 +109,7 @@ const HomeScreen = () => {
 
           <DropdownInput
               label="How many people in a group?"
-              placeholder="Select a value"
+              placeholder="How many people in a group?"
               selectedValue={groupSize}
               onPress={() => setGroupModalVisible(true)}
               displayText={groupSize ? getGroupLabel(groupSize) : ''}
@@ -117,7 +117,7 @@ const HomeScreen = () => {
 
           <DropdownInput
               label="Select an applicable budget?"
-              placeholder="Select a value"
+              placeholder="Select an applicable budget"
               selectedValue={budget}
               onPress={() => setBudgetModalVisible(true)}
               displayText={budget ? getBudgetLabel(budget) : ''}

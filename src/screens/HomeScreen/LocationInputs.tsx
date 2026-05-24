@@ -175,14 +175,14 @@ const styles = StyleSheet.create({
     },
     placeholderText: {
         fontFamily: 'Inter',
-        fontWeight: '400',
+        fontWeight: '400' as const,
         fontSize: 12,
         lineHeight: 15,
         color: '#0C1445',
     },
     selectedText: {
         fontFamily: 'Inter',
-        fontWeight: '400',
+        fontWeight: '700' as const,
         fontSize: 12,
         lineHeight: 15,
         color: '#0C1445',

@@ -5,8 +5,8 @@ import { RootStackParamList } from './src/types';
 import HomeScreen from '@screens/HomeScreen/HomeScreen';
 import LoadingScreen from '@screens/LoadingScreen/LoadingScreen';
 import ResultsScreen from '@screens/ResultsScreen/ResultsScreen';
-import ReservationScreen from '@screens/ReservationScreen';
-import SuccessScreen from '@screens/SuccessScreen';
+import ReservationScreen from '@screens/ReservationScreen/ReservationScreen';
+import SuccessScreen from '@screens/SuccessScreen/SuccessScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
