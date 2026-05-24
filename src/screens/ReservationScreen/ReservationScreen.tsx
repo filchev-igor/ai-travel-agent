@@ -51,7 +51,7 @@ const ReservationScreen = ({ route, navigation }: Props) => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
         >
-          {/* Trip Summary Bar */}
+          {/* Trip Summary Bar - Figma: border #0C1445, background #F2F2ED */}
           <View style={styles.tripBar}>
             <View>
               <Text style={styles.tripRoute}>
@@ -63,11 +63,18 @@ const ReservationScreen = ({ route, navigation }: Props) => {
             </View>
             <View style={styles.tripDetails}>
               <View style={styles.tripDetailItem}>
-                <Users size={12} color="#0C1445" />
+                {/* Figma: custom icon instead of Users */}
+                <View style={styles.iconPerson}>
+                  <View style={styles.iconPersonHead} />
+                  <View style={styles.iconPersonBody} />
+                </View>
                 <Text style={styles.tripDetailText}>{tripData.group}</Text>
               </View>
               <View style={styles.tripDetailItem}>
-                <DollarSign size={12} color="#0C1445" />
+                {/* Figma: custom icon instead of DollarSign */}
+                <View style={styles.iconMoney}>
+                  <Text style={styles.iconMoneyText}>$</Text>
+                </View>
                 <Text style={styles.tripDetailText}>{tripData.budget}€</Text>
               </View>
             </View>
@@ -76,7 +83,7 @@ const ReservationScreen = ({ route, navigation }: Props) => {
           {/* Stepper - Step 2 active */}
           <Stepper steps={steps} currentStep={2} />
 
-          {/* Trip Details Card */}
+          {/* Trip Details Card - Figma: border #0C1445, background #F2F2ED, borderRadius 10px */}
           <View style={styles.card}>
             <Text style={styles.cardTitle}>{variant.title}</Text>
             <Text style={styles.cardActivities}>
@@ -112,7 +119,7 @@ const ReservationScreen = ({ route, navigation }: Props) => {
             </View>
           </View>
 
-          {/* Map Section */}
+          {/* Map Section - Figma: title weight 700, note weight 100 */}
           <View style={styles.mapSection}>
             <Text style={styles.mapTitle}>Journey route map</Text>
             <View style={styles.mapPlaceholder}>
@@ -131,7 +138,7 @@ const ReservationScreen = ({ route, navigation }: Props) => {
           <View style={{ height: 20 }} />
         </ScrollView>
 
-        {/* Footer */}
+        {/* Footer - Figma: background #000000, height 64px */}
         <View style={styles.footer}>
           <Text style={styles.footerTotal}>Total costs {formatPrice(variant.total)}</Text>
           <TouchableOpacity style={styles.reserveBtn} onPress={onReserve}>
@@ -155,6 +162,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
   },
+  // Trip Summary Bar - matches Figma exactly
   tripBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -166,6 +174,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 12,
     marginBottom: 20,
+    height: 50,
   },
   tripRoute: {
     fontFamily: 'Inter',
@@ -192,6 +201,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
+  // Custom person icon from Figma
+  iconPerson: {
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconPersonHead: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#0C1445',
+    marginBottom: 4,
+  },
+  iconPersonBody: {
+    width: 14,
+    height: 10,
+    borderWidth: 2,
+    borderColor: '#0C1445',
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
+  },
+  // Custom money icon from Figma
+  iconMoney: {
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconMoneyText: {
+    fontFamily: 'Inter',
+    fontWeight: '200',
+    fontSize: 14,
+    color: '#0C1445',
+  },
   tripDetailText: {
     fontFamily: 'Inter',
     fontWeight: '200',
@@ -199,6 +243,7 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     color: '#0C1445',
   },
+  // Card - matches Figma exactly
   card: {
     backgroundColor: '#F2F2ED',
     borderWidth: 1,
@@ -244,6 +289,7 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     color: '#0C1445',
   },
+  // Map Section - matches Figma exactly
   mapSection: {
     gap: 10,
   },
@@ -257,7 +303,7 @@ const styles = StyleSheet.create({
   mapPlaceholder: {
     width: '100%',
     height: 195,
-    borderRadius: 10,
+    borderRadius: 0,
     overflow: 'hidden',
     backgroundColor: '#e8e8e8',
   },
@@ -272,6 +318,7 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     color: '#000000',
   },
+  // Footer - matches Figma exactly
   footer: {
     backgroundColor: '#000000',
     paddingHorizontal: 25,
