@@ -19,6 +19,7 @@
     "expo-linear-gradient": "^56.0.4",
     "expo-status-bar": "~55.0.6",
     "lucide-react-native": "^1.16.0",
+    "prettier": "^3.8.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-native": "0.83.6",

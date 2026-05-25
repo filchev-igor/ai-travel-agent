@@ -14,11 +14,11 @@ import Header from "../../components/Header";
 import Stepper from "../../components/Stepper";
 
 type Props = {
-  navigation: NativeStackNavigationProp<RootStackParamList, "Reservation">;
-  route: RouteProp<RootStackParamList, "Reservation">;
+  navigation: NativeStackNavigationProp<RootStackParamList, "Booking">;
+  route: RouteProp<RootStackParamList, "Booking">;
 };
 
-const ReservationScreen = ({ route, navigation }: Props) => {
+const BookingScreen = ({ route, navigation }: Props) => {
   const { tripData, variant } = route.params;
 
   const formatShortDate = (dateStr: string): string => {
@@ -67,9 +67,8 @@ const ReservationScreen = ({ route, navigation }: Props) => {
           </View>
         </View>
 
-        <Stepper steps={steps} currentStep={2} />
+        <Stepper steps={steps} currentStep={3} />
 
-        {/* Custom card for reservation - same design, different title */}
         <View style={styles.card}>
           <Text style={styles.title}>
             Journey from {tripData.start} to {tripData.end}
@@ -116,10 +115,10 @@ const ReservationScreen = ({ route, navigation }: Props) => {
           Total costs {formatPrice(variant.total)}
         </Text>
         <TouchableOpacity
-          style={styles.nextBtn}
-          onPress={() => navigation.navigate("Booking", { tripData, variant })}
+          style={styles.bookBtn}
+          onPress={() => navigation.navigate("Success")}
         >
-          <Text style={styles.nextBtnText}>Reserve</Text>
+          <Text style={styles.bookBtnText}>Book</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -241,7 +240,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: "#FFFFFF",
   },
-  nextBtn: {
+  bookBtn: {
     backgroundColor: "#0C1445",
     borderWidth: 1,
     borderColor: "#F2F2ED",
@@ -249,7 +248,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 10,
   },
-  nextBtnText: {
+  bookBtnText: {
     fontFamily: "Inter",
     fontWeight: "500",
     fontSize: 20,
@@ -258,4 +257,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReservationScreen;
+export default BookingScreen;
