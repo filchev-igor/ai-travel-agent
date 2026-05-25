@@ -9,11 +9,8 @@ export const useHomeScreen = () => {
 
     const [startLocation, setStartLocation] = useState('');
     const [endLocation, setEndLocation] = useState('');
-
-    // Allow empty dates initially (no default values)
     const [startDate, setStartDate] = useState<string>('');
     const [endDate, setEndDate] = useState<string>('');
-
     const [groupModalVisible, setGroupModalVisible] = useState(false);
     const [budgetModalVisible, setBudgetModalVisible] = useState(false);
     const [groupSize, setGroupSize] = useState('');

@@ -1,52 +1,104 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { TripVariant } from '../types';
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { TripVariant } from "../types";
 
-interface TripCardProps {
+type Props = {
   variant: TripVariant;
   index: number;
-  onSelect: (variant: TripVariant) => void;
-}
+  onPress?: () => void;
+};
 
-const Row = ({ label, value }: { label: string; value: string }) => (
-  <View style={styles.row}>
-    <Text style={styles.rowLabel}>{label}</Text>
-    <Text style={styles.rowValue}>{value}</Text>
-  </View>
-);
+const TripCard = ({ variant, index, onPress }: Props) => {
+  const formatPrice = (price: number) => `${price}€`;
 
-const TripCard = ({ variant, index, onSelect }: TripCardProps) => {
-  console.log('[TripCard] Rendering variant', index + 1);
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{variant.title}</Text>
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
+      <Text style={styles.title}>
+        {variant.title || `Trip suggestions - variant ${index + 1}`}
+      </Text>
       <Text style={styles.activities}>Activities: {variant.activities}</Text>
-      <View style={styles.divider} />
-      <Row label="✈️ Direct flight"              value={`$${variant.flight}`} />
-      <Row label="🚌 Transportation"              value={`$${variant.transportation}`} />
-      <Row label="🏨 Hospitality"                 value={`$${variant.hospitality} / apartment`} />
-      <Row label={`🎭 ${variant.activity1_name}`} value={`$${variant.activity1_cost}`} />
-      <Row label={`⛵ ${variant.activity2_name}`} value={`$${variant.activity2_cost}`} />
-      <View style={styles.divider} />
-      <Text style={styles.total}>${variant.total}</Text>
-      <TouchableOpacity style={styles.button} onPress={() => onSelect(variant)}>
-        <Text style={styles.buttonText}>Select this option →</Text>
-      </TouchableOpacity>
-    </View>
+
+      <View style={styles.row}>
+        <Text style={styles.label}>Direct flight</Text>
+        <Text style={styles.value}>{formatPrice(variant.flight)}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Transportation</Text>
+        <Text style={styles.value}>{formatPrice(variant.transportation)}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Hospitality</Text>
+        <Text style={styles.value}>
+          {formatPrice(variant.hospitality)} in an apartment
+        </Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>{variant.activity1_name}</Text>
+        <Text style={styles.value}>{formatPrice(variant.activity1_cost)}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>{variant.activity2_name}</Text>
+        <Text style={styles.value}>{formatPrice(variant.activity2_cost)}</Text>
+      </View>
+
+      <Text style={styles.total}>{formatPrice(variant.total)}</Text>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  card:       { backgroundColor: '#ffffff', borderRadius: 16, padding: 16, marginBottom: 12, shadowColor: '#1a2340', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 3 },
-  title:      { fontWeight: '700', fontSize: 14, color: '#1a2340', marginBottom: 4 },
-  activities: { fontSize: 12, color: '#8a9bb5', marginBottom: 10 },
-  divider:    { height: 1, backgroundColor: '#f4f6fb', marginVertical: 8 },
-  row:        { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 },
-  rowLabel:   { fontSize: 12, color: '#4a5568' },
-  rowValue:   { fontSize: 12, fontWeight: '500', color: '#1a2340' },
-  total:      { fontSize: 22, fontWeight: '700', color: '#1a2340', marginTop: 6, marginBottom: 10 },
-  button:     { backgroundColor: '#e91e8c', borderRadius: 10, padding: 12, alignItems: 'center' },
-  buttonText: { color: '#ffffff', fontWeight: '600', fontSize: 13 },
+  card: {
+    backgroundColor: "#F2F2ED",
+    borderWidth: 1,
+    borderColor: "#0C1445",
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 20,
+  },
+  title: {
+    fontFamily: "Inter",
+    fontWeight: "700",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#0C1445",
+    marginBottom: 8,
+  },
+  activities: {
+    fontFamily: "Inter",
+    fontWeight: "400",
+    fontSize: 12,
+    lineHeight: 15,
+    color: "#0C1445",
+    marginBottom: 16,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  label: {
+    fontFamily: "Inter",
+    fontWeight: "400",
+    fontSize: 12,
+    lineHeight: 15,
+    color: "#0C1445",
+  },
+  value: {
+    fontFamily: "Inter",
+    fontWeight: "200",
+    fontSize: 12,
+    lineHeight: 15,
+    color: "#0C1445",
+  },
+  total: {
+    fontFamily: "Inter",
+    fontWeight: "300",
+    fontSize: 20,
+    lineHeight: 24,
+    color: "#0C1445",
+    marginTop: 12,
+  },
 });
 
 export default TripCard;

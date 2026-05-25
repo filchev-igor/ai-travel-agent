@@ -25,5 +25,6 @@ export type RootStackParamList = {
   Loading: { tripData: TripData };
   Results: { tripData: TripData; variants: TripVariant[] };
   Reservation: { tripData: TripData; variant: TripVariant };
-  Success: undefined;
+  Booking: { tripData: TripData; variant: TripVariant };
+  Trip: { tripData: TripData; variant: TripVariant };
 };

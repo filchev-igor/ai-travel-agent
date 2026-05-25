@@ -1,8 +1,19 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Modal, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Modal,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Search } from 'lucide-react-native';
 import LocationInputs from './LocationInputs';
 import DateInputs from './DateInputs';
 import DropdownInput from './DropdownInput';
+import Header from '../../components/Header';
 import { useHomeScreen } from './useHomeScreen';
 import { GROUP_OPTIONS, BUDGET_OPTIONS, getGroupLabel, getBudgetLabel } from './constants';
 
@@ -35,7 +46,12 @@ const HomeScreen = () => {
       onSelect: (value: string) => void,
       title: string
   ) => (
-      <Modal visible={visible} transparent={true} animationType="slide" onRequestClose={onClose}>
+      <Modal
+          visible={visible}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={onClose}
+      >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{title}</Text>
@@ -64,21 +80,16 @@ const HomeScreen = () => {
 
   return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.headerLogo}>
-            <View style={styles.headerIcon}>
-              <Text style={styles.headerIconText}>🧳</Text>
-            </View>
-            <Text style={styles.headerTitle}>AI travel{'\n'}agent</Text>
-          </View>
-          <View style={styles.avatar}>
-            <Text>👤</Text>
-          </View>
-        </View>
+        <Header />
 
-        <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
+        <ScrollView
+            style={styles.body}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.bodyContent}
+        >
           <Text style={styles.subtitle}>
-            Choose details of a trip and the application will combine several variants for you
+            Choose details of a trip and the application will combine several
+            variants for you
           </Text>
 
           <LocationInputs
@@ -97,7 +108,7 @@ const HomeScreen = () => {
           />
 
           <DropdownInput
-              label="People in group"
+              label="How many people in a group?"
               placeholder="How many people in a group?"
               selectedValue={groupSize}
               onPress={() => setGroupModalVisible(true)}
@@ -105,78 +116,85 @@ const HomeScreen = () => {
           />
 
           <DropdownInput
-              label="Budget"
-              placeholder="Select an applicable budget?"
+              label="Select an applicable budget?"
+              placeholder="Select an applicable budget"
               selectedValue={budget}
               onPress={() => setBudgetModalVisible(true)}
               displayText={budget ? getBudgetLabel(budget) : ''}
           />
 
-          <TouchableOpacity style={styles.button} onPress={onCombinePress}>
-            <Text style={styles.buttonText}>Combine journey 🔍</Text>
+          <TouchableOpacity onPress={onCombinePress} activeOpacity={0.8}>
+            <LinearGradient
+                colors={['#FFBABA', '#D000FF']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.button}
+            >
+              <Text style={styles.buttonText}>Combine journey</Text>
+              <Search size={16} color="#F2F2ED" />
+            </LinearGradient>
           </TouchableOpacity>
-          <View style={{ height: 30 }} />
         </ScrollView>
 
-        {renderDropdownModal(groupModalVisible, () => setGroupModalVisible(false), GROUP_OPTIONS, setGroupSize, 'Select number of people')}
-        {renderDropdownModal(budgetModalVisible, () => setBudgetModalVisible(false), BUDGET_OPTIONS, setBudget, 'Select budget range')}
+        {/* Modals */}
+        {renderDropdownModal(
+            groupModalVisible,
+            () => setGroupModalVisible(false),
+            GROUP_OPTIONS,
+            setGroupSize,
+            'Select number of people'
+        )}
+        {renderDropdownModal(
+            budgetModalVisible,
+            () => setBudgetModalVisible(false),
+            BUDGET_OPTIONS,
+            setBudget,
+            'Select budget range'
+        )}
       </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f4f6fb' },
-  header: {
-    backgroundColor: '#1a2340',
-    padding: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  container: {
+    flex: 1,
+    backgroundColor: '#F2F2ED',
   },
-  headerLogo: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  headerIcon: {
-    width: 38,
-    height: 38,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+  body: {
+    flex: 1,
   },
-  headerIconText: { fontSize: 18 },
-  headerTitle: {
-    color: '#ffffff',
-    fontSize: 13,
-    fontWeight: '600',
-    lineHeight: 18,
+  bodyContent: {
+    paddingHorizontal: 25,
+    paddingTop: 10,
+    paddingBottom: 30,
   },
-  avatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: '#667eea',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  body: { flex: 1, padding: 20 },
   subtitle: {
-    fontSize: 14,
-    color: '#4a5568',
+    fontFamily: 'Inter',
+    fontWeight: '600',
+    fontSize: 16,
+    lineHeight: 19,
+    color: '#000000',
     marginBottom: 20,
-    lineHeight: 20,
+    marginTop: 10,
   },
   button: {
-    backgroundColor: '#e91e8c',
-    borderRadius: 14,
-    padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    padding: 10,
+    gap: 10,
+    width: '100%',
+    height: 44,
+    borderRadius: 4,
     marginTop: 24,
-    shadowColor: '#e91e8c',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    elevation: 6,
   },
-  buttonText: { color: '#ffffff', fontSize: 15, fontWeight: '700' },
+  buttonText: {
+    fontFamily: 'Inter',
+    fontWeight: '600',
+    fontSize: 16,
+    lineHeight: 19,
+    color: '#F2F2ED',
+  },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -184,40 +202,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 20,
+    backgroundColor: '#F2F2ED',
+    borderRadius: 4,
     padding: 20,
     width: '80%',
     maxHeight: '70%',
   },
   modalTitle: {
-    fontSize: 18,
+    fontFamily: 'Inter',
+    fontSize: 16,
     fontWeight: '600',
-    color: '#1a2340',
+    color: '#0C1445',
     textAlign: 'center',
     marginBottom: 20,
   },
   modalOption: {
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: '#69425F',
   },
   modalOptionText: {
-    fontSize: 16,
-    color: '#1a2340',
+    fontFamily: 'Inter',
+    fontSize: 14,
+    color: '#0C1445',
     textAlign: 'center',
   },
   modalCloseBtn: {
     marginTop: 15,
     paddingVertical: 12,
-    backgroundColor: '#e2e8f0',
-    borderRadius: 10,
+    backgroundColor: '#0C1445',
+    borderRadius: 4,
   },
   modalCloseBtnText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
-    color: '#4a5568',
+    color: '#F2F2ED',
   },
 });
 

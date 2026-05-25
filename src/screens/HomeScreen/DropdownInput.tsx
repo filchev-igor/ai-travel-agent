@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ChevronDown } from 'lucide-react-native';
 
 type Props = {
     label: string;
@@ -9,44 +10,45 @@ type Props = {
     displayText: string;
 };
 
-const DropdownInput = ({ label, placeholder, selectedValue, onPress, displayText }: Props) => (
-    <>
-        <Text style={styles.label}>{label}</Text>
-        <TouchableOpacity style={styles.input} onPress={onPress}>
+const DropdownInput = ({ label, placeholder, selectedValue, onPress, displayText }: Props) => {
+    return (
+        <TouchableOpacity style={styles.selector} onPress={onPress}>
             <Text style={selectedValue ? styles.selectedText : styles.placeholderText}>
                 {displayText || placeholder}
             </Text>
+            <ChevronDown size={16} color="#0C1445" />
         </TouchableOpacity>
-    </>
-);
+    );
+};
 
 const styles = StyleSheet.create({
-    label: {
-        fontSize: 11,
-        fontWeight: '600',
-        color: '#8a9bb5',
-        textTransform: 'uppercase',
-        letterSpacing: 0.8,
-        marginBottom: 4,
-        marginTop: 10,
-    },
-    input: {
-        backgroundColor: '#ffffff',
-        borderWidth: 1.5,
-        borderColor: '#e2e8f0',
-        borderRadius: 12,
-        padding: 13,
-        fontSize: 14,
-        color: '#1a2340',
-        justifyContent: 'center',
+    selector: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        gap: 61,
+        width: '100%',
+        height: 44,
+        backgroundColor: '#F2F2ED',
+        borderWidth: 1,
+        borderColor: '#69425F',
+        borderRadius: 4,
+        marginBottom: 12,
     },
     placeholderText: {
-        fontSize: 14,
-        color: '#8a9bb5',
+        fontFamily: 'Inter',
+        fontWeight: '400' as const,
+        fontSize: 12,
+        lineHeight: 15,
+        color: '#0C1445',
     },
     selectedText: {
-        fontSize: 14,
-        color: '#1a2340',
+        fontFamily: 'Inter',
+        fontWeight: '700' as const,
+        fontSize: 12,
+        lineHeight: 15,
+        color: '#0C1445',
     },
 });
 

@@ -1,40 +1,31 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList, TextInput } from 'react-native';
+import { ChevronDown } from 'lucide-react-native';
 import { EUROPEAN_COUNTRY_CODES } from './constants';
 
-// Search only cities (not towns, villages, or regions)
 const searchCities = async (query: string, countryCodes: string[]): Promise<any[]> => {
     if (!query || query.length < 2) return [];
 
-    // Add 'city' parameter to restrict to cities only
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=10&countrycodes=${countryCodes.join(',')}&accept-language=en&featuretype=city&class=place&type=city`;
 
     try {
         const response = await fetch(url, {
-            headers: {
-                'User-Agent': 'AITravelAgent/1.0',
-            },
+            headers: { 'User-Agent': 'AITravelAgent/1.0' },
         });
         const data = await response.json();
 
-        // Additional filter to ensure only cities
         const citiesOnly = data.filter((item: any) => {
-            // Check if the result is a city
             return item.type === 'city' ||
                 item.class === 'place' && item.type === 'city' ||
                 (item.address?.city && !item.address?.town && !item.address?.village);
         });
 
-        // Deduplicate by city name + country
         const seen = new Map();
         const uniqueResults = citiesOnly.filter((item: any) => {
             let cityName = item.address?.city || item.name;
             let countryName = item.address?.country || '';
             const key = `${cityName.toLowerCase()}|${countryName.toLowerCase()}`;
-
-            if (seen.has(key)) {
-                return false;
-            }
+            if (seen.has(key)) return false;
             seen.set(key, true);
             return true;
         });
@@ -77,21 +68,15 @@ const LocationInputs = ({ startLocation, endLocation, onStartChange, onEndChange
     }, [searchQuery, activeField]);
 
     const handleLocationSelect = (field: 'start' | 'end', item: any) => {
-        // Extract city name - prioritize city from address
         let cityName = item.address?.city || item.name;
         let countryName = item.address?.country || '';
-
-        // Clean up city name (remove any parentheses or extra text)
         cityName = cityName.split('(')[0].trim();
-
         const displayValue = countryName ? `${cityName}, ${countryName}` : cityName;
-
         if (field === 'start') {
             onStartChange(displayValue);
         } else {
             onEndChange(displayValue);
         }
-
         setActiveField(null);
         setSearchQuery('');
         setSuggestions([]);
@@ -110,97 +95,61 @@ const LocationInputs = ({ startLocation, endLocation, onStartChange, onEndChange
     };
 
     const renderSuggestion = ({ item }: { item: any }) => {
-        // Extract clean city name
         let cityName = item.address?.city || item.name;
         let countryName = item.address?.country || '';
         let regionName = item.address?.state || item.address?.region || '';
-
-        // Clean up names
         cityName = cityName.split('(')[0].trim();
-
-        // For display: show "City, Region, Country" or "City, Country"
-        let secondaryText = '';
-        if (regionName && regionName !== cityName) {
-            secondaryText = `${regionName}, ${countryName}`;
-        } else {
-            secondaryText = countryName;
-        }
+        let secondaryText = regionName && regionName !== cityName ? `${regionName}, ${countryName}` : countryName;
 
         return (
-            <TouchableOpacity
-                style={styles.suggestionItem}
-                onPress={() => handleLocationSelect(activeField!, item)}
-            >
+            <TouchableOpacity style={styles.suggestionItem} onPress={() => handleLocationSelect(activeField!, item)}>
                 <Text style={styles.suggestionCity}>{cityName}</Text>
-                {secondaryText ? (
-                    <Text style={styles.suggestionCountry}>{secondaryText}</Text>
-                ) : null}
+                {secondaryText ? <Text style={styles.suggestionCountry}>{secondaryText}</Text> : null}
             </TouchableOpacity>
         );
     };
 
     return (
         <View>
-            <Text style={styles.label}>Start location</Text>
-            <TouchableOpacity style={styles.input} onPress={() => openModal('start')}>
-                <Text style={startLocation ? styles.inputText : styles.placeholderText}>
-                    {startLocation || 'e.g. London'}
+            <TouchableOpacity style={styles.selector} onPress={() => openModal('start')}>
+                <Text style={startLocation ? styles.selectedText : styles.placeholderText}>
+                    {startLocation || 'Start location'}
                 </Text>
+                <ChevronDown size={16} color="#0C1445" />
             </TouchableOpacity>
 
-            <Text style={[styles.label, styles.labelSpacing]}>End location</Text>
-            <TouchableOpacity style={styles.input} onPress={() => openModal('end')}>
-                <Text style={endLocation ? styles.inputText : styles.placeholderText}>
-                    {endLocation || 'e.g. Paris'}
+            <TouchableOpacity style={styles.selector} onPress={() => openModal('end')}>
+                <Text style={endLocation ? styles.selectedText : styles.placeholderText}>
+                    {endLocation || 'End location'}
                 </Text>
+                <ChevronDown size={16} color="#0C1445" />
             </TouchableOpacity>
 
-            <Modal
-                visible={activeField !== null}
-                animationType="slide"
-                transparent={true}
-                onRequestClose={closeModal}
-            >
+            <Modal visible={activeField !== null} animationType="slide" transparent onRequestClose={closeModal}>
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
                         <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>
-                                {activeField === 'start' ? 'Select start city' : 'Select end city'}
-                            </Text>
+                            <Text style={styles.modalTitle}>{activeField === 'start' ? 'Select start city' : 'Select end city'}</Text>
                             <TouchableOpacity onPress={closeModal}>
                                 <Text style={styles.modalCloseText}>✕</Text>
                             </TouchableOpacity>
                         </View>
-
                         <TextInput
                             style={styles.modalInput}
                             placeholder="Search for a city..."
                             placeholderTextColor="#8a9bb5"
                             value={searchQuery}
                             onChangeText={setSearchQuery}
-                            autoFocus={true}
+                            autoFocus
                         />
-
                         {isLoading ? (
-                            <View style={styles.loadingContainer}>
-                                <Text style={styles.loadingText}>Searching...</Text>
-                            </View>
+                            <View style={styles.loadingContainer}><Text style={styles.loadingText}>Searching...</Text></View>
                         ) : suggestions.length > 0 ? (
-                            <FlatList
-                                data={suggestions}
-                                keyExtractor={(item, index) => `${item.place_id || index}`}
-                                renderItem={renderSuggestion}
-                                style={styles.suggestionsList}
-                                keyboardShouldPersistTaps="always"
-                            />
+                            <FlatList data={suggestions} keyExtractor={(item, i) => `${item.place_id || i}`} renderItem={renderSuggestion} keyboardShouldPersistTaps="always" />
                         ) : searchQuery.length >= 2 ? (
-                            <View style={styles.emptyContainer}>
-                                <Text style={styles.emptyText}>No cities found</Text>
-                            </View>
+                            <View style={styles.emptyContainer}><Text style={styles.emptyText}>No cities found</Text></View>
                         ) : (
-                            <View style={styles.emptyContainer}>
-                                <Text style={styles.emptyText}>Type at least 2 characters to search</Text>
-                            </View>
+                            <View style={styles.emptyContainer}><Text style={styles.emptyText}>Type at least 2 characters to search</Text></View>
                         )}
                     </View>
                 </View>
@@ -210,33 +159,33 @@ const LocationInputs = ({ startLocation, endLocation, onStartChange, onEndChange
 };
 
 const styles = StyleSheet.create({
-    label: {
-        fontSize: 11,
-        fontWeight: '600',
-        color: '#8a9bb5',
-        textTransform: 'uppercase',
-        letterSpacing: 0.8,
-        marginBottom: 4,
-    },
-    labelSpacing: {
-        marginTop: 16,
-    },
-    input: {
-        backgroundColor: '#ffffff',
-        borderWidth: 1.5,
-        borderColor: '#e2e8f0',
-        borderRadius: 12,
-        padding: 13,
-        justifyContent: 'center',
-        minHeight: 50,
-    },
-    inputText: {
-        fontSize: 14,
-        color: '#1a2340',
+    selector: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        gap: 61,
+        width: '100%',
+        height: 44,
+        backgroundColor: '#F2F2ED',
+        borderWidth: 1,
+        borderColor: '#69425F',
+        borderRadius: 4,
+        marginBottom: 12,
     },
     placeholderText: {
-        fontSize: 14,
-        color: '#8a9bb5',
+        fontFamily: 'Inter',
+        fontWeight: '400' as const,
+        fontSize: 12,
+        lineHeight: 15,
+        color: '#0C1445',
+    },
+    selectedText: {
+        fontFamily: 'Inter',
+        fontWeight: '700' as const,
+        fontSize: 12,
+        lineHeight: 15,
+        color: '#0C1445',
     },
     modalOverlay: {
         flex: 1,
@@ -244,7 +193,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     modalContent: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#F2F2ED',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         maxHeight: '80%',
@@ -256,69 +205,57 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#e2e8f0',
+        borderBottomColor: '#69425F',
     },
     modalTitle: {
-        fontSize: 18,
+        fontFamily: 'Inter',
+        fontSize: 16,
         fontWeight: '600',
-        color: '#1a2340',
+        color: '#0C1445',
     },
     modalCloseText: {
         fontSize: 20,
-        color: '#8a9bb5',
+        color: '#0C1445',
         padding: 4,
     },
     modalInput: {
-        backgroundColor: '#f4f6fb',
+        backgroundColor: '#F2F2ED',
         borderWidth: 1,
-        borderColor: '#e2e8f0',
-        borderRadius: 12,
-        padding: 14,
+        borderColor: '#69425F',
+        borderRadius: 4,
+        padding: 12,
         margin: 16,
-        fontSize: 16,
-        color: '#1a2340',
-    },
-    suggestionsList: {
-        flex: 1,
+        fontSize: 14,
+        color: '#0C1445',
+        fontFamily: 'Inter',
     },
     suggestionItem: {
         paddingHorizontal: 16,
         paddingVertical: 14,
         borderBottomWidth: 1,
-        borderBottomColor: '#e2e8f0',
+        borderBottomColor: '#69425F',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
     suggestionCity: {
-        fontSize: 16,
-        color: '#1a2340',
+        fontFamily: 'Inter',
+        fontSize: 14,
+        color: '#0C1445',
         fontWeight: '500',
         flex: 2,
     },
     suggestionCountry: {
-        fontSize: 13,
-        color: '#8a9bb5',
+        fontFamily: 'Inter',
+        fontSize: 12,
+        color: '#69425F',
         flex: 1,
         textAlign: 'right',
     },
-    loadingContainer: {
-        padding: 40,
-        alignItems: 'center',
-    },
-    loadingText: {
-        fontSize: 14,
-        color: '#8a9bb5',
-    },
-    emptyContainer: {
-        padding: 40,
-        alignItems: 'center',
-    },
-    emptyText: {
-        fontSize: 14,
-        color: '#8a9bb5',
-        textAlign: 'center',
-    },
+    loadingContainer: { padding: 40, alignItems: 'center' },
+    loadingText: { fontFamily: 'Inter', fontSize: 14, color: '#69425F' },
+    emptyContainer: { padding: 40, alignItems: 'center' },
+    emptyText: { fontFamily: 'Inter', fontSize: 14, color: '#69425F', textAlign: 'center' },
 });
 
 export default LocationInputs;
