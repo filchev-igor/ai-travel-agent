@@ -6,8 +6,8 @@ type Props = {
   variant: TripVariant;
   index: number;
   onPress?: () => void;
-  readonly?: boolean; // New prop for read-only mode
-  customTitle?: string; // Optional custom title (for Reservation/Booking)
+  readonly?: boolean;
+  customTitle?: string;
 };
 
 const TripCard = ({
@@ -27,6 +27,7 @@ const TripCard = ({
       style={styles.card}
       onPress={readonly ? undefined : onPress}
       activeOpacity={readonly ? 1 : 0.7}
+      disabled={readonly}
     >
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.activities}>Activities: {variant.activities}</Text>

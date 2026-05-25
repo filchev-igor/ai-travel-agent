@@ -31,6 +31,7 @@ const ResultsScreen = ({ route, navigation }: Props) => {
 
   return (
     <View style={styles.container}>
+      {/* Back button just goes back - NO confirmation */}
       <Header showBack onBackPress={() => navigation.goBack()} />
 
       <ScrollView

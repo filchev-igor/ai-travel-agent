@@ -1,9 +1,10 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Users, Edit2 } from "lucide-react-native";
 import { useNavigation, CommonActions } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
+import ConfirmModal from "./ConfirmModal";
 
 type Props = {
   start: string;
@@ -36,58 +37,65 @@ const TripSummaryBar = ({
 }: Props) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleEdit = () => {
     if (onEdit) {
       onEdit();
     } else {
-      Alert.alert(
-        "Change Trip Details",
-        "This will reset your trip selection. Are you sure?",
-        [
-          { text: "Cancel", style: "cancel" },
-          {
-            text: "Yes, Change",
-            style: "destructive",
-            onPress: () => {
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 0,
-                  routes: [{ name: "Home" }],
-                }),
-              );
-            },
-          },
-        ],
-      );
+      setShowConfirmModal(true);
     }
   };
 
+  const handleConfirmReset = () => {
+    setShowConfirmModal(false);
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      }),
+    );
+  };
+
+  const handleCancelReset = () => {
+    setShowConfirmModal(false);
+  };
+
   return (
-    <View style={styles.tripBar}>
-      <View>
-        <Text style={styles.tripRoute}>
-          {start} → {end}
-        </Text>
-        <Text style={styles.tripDates}>
-          {formatShortDate(startDate)} – {formatShortDate(endDate)}
-        </Text>
-      </View>
-      <View style={styles.tripDetails}>
-        <View style={styles.tripDetailItem}>
-          <Users size={12} color="#0C1445" strokeWidth={2} />
-          <Text style={styles.tripDetailText}>{group}</Text>
+    <>
+      <View style={styles.tripBar}>
+        <View>
+          <Text style={styles.tripRoute}>
+            {start} → {end}
+          </Text>
+          <Text style={styles.tripDates}>
+            {formatShortDate(startDate)} – {formatShortDate(endDate)}
+          </Text>
         </View>
-        <View style={styles.tripDetailItem}>
-          <Text style={styles.tripDetailText}>{budget} €</Text>
+        <View style={styles.tripDetails}>
+          <View style={styles.tripDetailItem}>
+            <Users size={12} color="#0C1445" strokeWidth={2} />
+            <Text style={styles.tripDetailText}>{group}</Text>
+          </View>
+          <View style={styles.tripDetailItem}>
+            <Text style={styles.tripDetailText}>{budget} €</Text>
+          </View>
+          {showEdit && (
+            <TouchableOpacity onPress={handleEdit}>
+              <Edit2 size={14} color="#0C1445" strokeWidth={2} />
+            </TouchableOpacity>
+          )}
         </View>
-        {showEdit && (
-          <TouchableOpacity onPress={handleEdit}>
-            <Edit2 size={14} color="#0C1445" strokeWidth={2} />
-          </TouchableOpacity>
-        )}
       </View>
-    </View>
+
+      <ConfirmModal
+        visible={showConfirmModal}
+        title="Change Trip Details"
+        message="This will reset your trip selection and take you back to the home screen. Are you sure?"
+        onConfirm={handleConfirmReset}
+        onCancel={handleCancelReset}
+      />
+    </>
   );
 };
 
