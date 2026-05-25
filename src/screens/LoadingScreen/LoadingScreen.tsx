@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
-import { RootStackParamList } from "../../types";
+import { RootStackParamList, TripVariant } from "../../types";
 import { fetchTripVariants } from "../../services/geminiApi";
 import Header from "../../components/Header";
 import SummaryRow from "./SummaryRow";
+import Loader from "./Loader";
 import { LOADING_LABELS, getGroupDisplay, formatDate } from "./constants";
 
 type Props = {
@@ -17,46 +17,85 @@ type Props = {
 const LoadingScreen = ({ route, navigation }: Props) => {
   const { tripData } = route.params;
   const [labelIndex, setLabelIndex] = useState(0);
-  const progressAnim = useRef(new Animated.Value(0)).current;
+  const [variants, setVariants] = useState<TripVariant[] | null>(null);
+  const [apiDuration, setApiDuration] = useState<number | null>(null);
+  const labelIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = useRef(Date.now());
+  const apiStartTimeRef = useRef(Date.now());
 
-  const animateProgress = (toValue: number, duration: number) =>
-    Animated.timing(progressAnim, {
-      toValue,
-      duration,
-      useNativeDriver: false,
-    }).start();
-
+  // Start label rotation immediately with an estimated duration
   useEffect(() => {
-    const labelInterval = setInterval(() => {
+    // Start with estimated duration (30 seconds default)
+    let estimatedDuration = 30000;
+    let intervalTime = estimatedDuration / LOADING_LABELS.length;
+
+    console.log(
+      `[Loader] Starting labels with estimated ${(estimatedDuration / 1000).toFixed(0)}s total, ${(intervalTime / 1000).toFixed(1)}s per label`,
+    );
+
+    labelIntervalRef.current = setInterval(() => {
       setLabelIndex((prev) => {
-        const next = prev + 1;
-        if (next >= LOADING_LABELS.length) {
-          clearInterval(labelInterval);
-          return prev;
-        }
+        const next = (prev + 1) % LOADING_LABELS.length;
         return next;
       });
-    }, 1200);
+    }, intervalTime);
 
-    animateProgress(0.85, 4800);
-
-    const callApi = async () => {
-      const variants = await fetchTripVariants(tripData);
-      animateProgress(1, 300);
-      setTimeout(() => {
-        clearInterval(labelInterval);
-        navigation.replace("Results", { tripData, variants });
-      }, 400);
+    return () => {
+      if (labelIntervalRef.current) clearInterval(labelIntervalRef.current);
     };
-
-    callApi();
-    return () => clearInterval(labelInterval);
   }, []);
 
-  const progressWidth = progressAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0%", "100%"],
-  });
+  // Call API and measure actual time
+  useEffect(() => {
+    apiStartTimeRef.current = Date.now();
+
+    fetchTripVariants(tripData).then((result) => {
+      const actualDuration = Date.now() - apiStartTimeRef.current;
+      console.log(
+        `[API] Actual response time: ${actualDuration}ms (${(actualDuration / 1000).toFixed(1)} seconds)`,
+      );
+      setApiDuration(actualDuration);
+      setVariants(result);
+    });
+  }, []);
+
+  // Adjust label interval when actual API duration is known
+  useEffect(() => {
+    if (apiDuration !== null && labelIntervalRef.current) {
+      // Clear existing interval
+      clearInterval(labelIntervalRef.current);
+
+      // Calculate new interval based on actual duration
+      const newIntervalTime = apiDuration / LOADING_LABELS.length;
+      console.log(
+        `[Loader] Adjusting - now ${(apiDuration / 1000).toFixed(1)}s total, ${(newIntervalTime / 1000).toFixed(1)}s per label`,
+      );
+
+      // Start new interval with adjusted timing
+      labelIntervalRef.current = setInterval(() => {
+        setLabelIndex((prev) => {
+          const next = (prev + 1) % LOADING_LABELS.length;
+          return next;
+        });
+      }, newIntervalTime);
+    }
+  }, [apiDuration]);
+
+  // Navigate when variants are received
+  useEffect(() => {
+    if (variants !== null && apiDuration !== null) {
+      const elapsed = Date.now() - startTimeRef.current;
+      const minDuration = Math.max(apiDuration, 2000);
+      const delay = Math.max(0, minDuration - elapsed);
+
+      console.log(`[Loader] Navigating in ${delay}ms`);
+
+      setTimeout(() => {
+        if (labelIntervalRef.current) clearInterval(labelIntervalRef.current);
+        navigation.replace("Results", { tripData, variants });
+      }, delay);
+    }
+  }, [variants, apiDuration]);
 
   return (
     <View style={styles.container}>
@@ -80,25 +119,10 @@ const LoadingScreen = ({ route, navigation }: Props) => {
           <SummaryRow label="Budget" value={`€${tripData.budget}`} />
         </View>
 
-        {/* Progress Bar with text INSIDE */}
-        <View style={styles.progressWrap}>
-          <View style={styles.progressBarContainer}>
-            <LinearGradient
-              colors={["#FFBABA", "#D000FF"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.progressBar}
-            >
-              <Animated.View
-                style={[styles.progressFill, { width: progressWidth }]}
-              />
-            </LinearGradient>
-            {/* Text centered INSIDE the progress bar */}
-            <Text style={styles.progressLabel}>
-              {LOADING_LABELS[labelIndex]}
-            </Text>
-          </View>
-        </View>
+        <Loader
+          label={LOADING_LABELS[labelIndex]}
+          duration={apiDuration || 30000}
+        />
       </View>
     </View>
   );
@@ -126,43 +150,6 @@ const styles = StyleSheet.create({
   summary: {
     backgroundColor: "transparent",
     marginBottom: 40,
-  },
-  progressWrap: {
-    width: "100%",
-  },
-  progressBarContainer: {
-    position: "relative",
-    width: "100%",
-    height: 44,
-  },
-  progressBar: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderRadius: 100,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: "rgba(255,255,255,0.3)",
-    borderRadius: 100,
-  },
-  progressLabel: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    textAlign: "center",
-    textAlignVertical: "center",
-    fontFamily: "Inter",
-    fontWeight: "400",
-    fontSize: 12,
-    lineHeight: 44,
-    color: "#F2F2ED",
-    includeFontPadding: false,
   },
 });
 
