@@ -116,7 +116,7 @@ const BookingScreen = ({ route, navigation }: Props) => {
         </Text>
         <TouchableOpacity
           style={styles.bookBtn}
-          onPress={() => navigation.navigate("Success")}
+          onPress={() => navigation.navigate("Trip", { tripData, variant })}
         >
           <Text style={styles.bookBtnText}>Book</Text>
         </TouchableOpacity>

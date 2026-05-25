@@ -5,8 +5,9 @@ import { RootStackParamList } from "./src/types";
 import HomeScreen from "@screens/HomeScreen/HomeScreen";
 import LoadingScreen from "@screens/LoadingScreen/LoadingScreen";
 import ResultsScreen from "@screens/ResultsScreen/ResultsScreen";
-import ReservationScreen from "@screens/ReservationScreen/ReservationScreen";
 import BookingScreen from "@screens/BookingScreen/BookingScreen";
+import ReservationScreen from "@screens/ReservationScreen/ReservationScreen";
+import TripScreen from "@screens/TripScreen/TripScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -23,6 +24,7 @@ const App = () => (
       <Stack.Screen name="Results" component={ResultsScreen} />
       <Stack.Screen name="Reservation" component={ReservationScreen} />
       <Stack.Screen name="Booking" component={BookingScreen} />
+      <Stack.Screen name="Trip" component={TripScreen} />
     </Stack.Navigator>
   </NavigationContainer>
 );
