@@ -1,18 +1,12 @@
 import React from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
-import { Users, DollarSign, Edit2 } from "lucide-react-native";
 import { RootStackParamList, TripVariant } from "../../types";
 import Header from "../../components/Header";
 import Stepper from "../../components/Stepper";
 import TripCard from "../../components/TripCard";
+import TripSummaryBar from "../../components/TripSummaryBar";
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Results">;
@@ -26,14 +20,6 @@ const ResultsScreen = ({ route, navigation }: Props) => {
     navigation.navigate("Reservation", { tripData, variant });
   };
 
-  const formatShortDate = (dateStr: string): string => {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-    });
-  };
-
   const steps = [
     { label: "Browse journeys", sublabel: "Browse journeys" },
     {
@@ -43,6 +29,16 @@ const ResultsScreen = ({ route, navigation }: Props) => {
     { label: "Book a journey", sublabel: "Book a\njourney" },
   ];
 
+  // Create a clean tripData object for editing (without any extra fields)
+  const editData = {
+    start: tripData.start,
+    end: tripData.end,
+    startDate: tripData.startDate,
+    endDate: tripData.endDate,
+    group: tripData.group,
+    budget: tripData.budget,
+  };
+
   return (
     <View style={styles.container}>
       <Header showBack onBackPress={() => navigation.goBack()} />
@@ -51,31 +47,16 @@ const ResultsScreen = ({ route, navigation }: Props) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
       >
-        <TouchableOpacity
-          style={styles.tripBar}
-          onPress={() => navigation.navigate("Home")}
-        >
-          <View>
-            <Text style={styles.tripRoute}>
-              {tripData.start} → {tripData.end}
-            </Text>
-            <Text style={styles.tripDates}>
-              {formatShortDate(tripData.startDate)} –{" "}
-              {formatShortDate(tripData.endDate)}
-            </Text>
-          </View>
-          <View style={styles.tripDetails}>
-            <View style={styles.tripDetailItem}>
-              <Users size={12} color="#0C1445" strokeWidth={2} />
-              <Text style={styles.tripDetailText}>{tripData.group}</Text>
-            </View>
-            <View style={styles.tripDetailItem}>
-              <DollarSign size={12} color="#0C1445" strokeWidth={2} />
-              <Text style={styles.tripDetailText}>{tripData.budget}€</Text>
-            </View>
-            <Edit2 size={14} color="#0C1445" strokeWidth={2} />
-          </View>
-        </TouchableOpacity>
+        <TripSummaryBar
+          start={tripData.start}
+          end={tripData.end}
+          startDate={tripData.startDate}
+          endDate={tripData.endDate}
+          group={tripData.group}
+          budget={tripData.budget}
+          showEdit={true}
+          tripData={editData}
+        />
 
         <Stepper steps={steps} currentStep={1} />
 
@@ -103,50 +84,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingTop: 20,
     paddingBottom: 40,
-  },
-  tripBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#F2F2ED",
-    borderWidth: 1,
-    borderColor: "#0C1445",
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    marginBottom: 20,
-  },
-  tripRoute: {
-    fontFamily: "Inter",
-    fontWeight: "600",
-    fontSize: 12,
-    lineHeight: 15,
-    color: "#0C1445",
-    marginBottom: 2,
-  },
-  tripDates: {
-    fontFamily: "Inter",
-    fontWeight: "100",
-    fontSize: 10,
-    lineHeight: 12,
-    color: "#0C1445",
-  },
-  tripDetails: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  tripDetailItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  tripDetailText: {
-    fontFamily: "Inter",
-    fontWeight: "200",
-    fontSize: 12,
-    lineHeight: 15,
-    color: "#0C1445",
   },
 });
 
