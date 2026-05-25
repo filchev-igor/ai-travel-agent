@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Users, Edit2 } from "lucide-react-native";
-import { useNavigation, CommonActions } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
 import ConfirmModal from "./ConfirmModal";
@@ -15,6 +15,7 @@ type Props = {
   budget: string;
   showEdit?: boolean;
   onEdit?: () => void;
+  tripData?: any; // Full trip data for editing
 };
 
 const formatShortDate = (dateStr: string): string => {
@@ -34,6 +35,7 @@ const TripSummaryBar = ({
   budget,
   showEdit = false,
   onEdit,
+  tripData,
 }: Props) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -42,6 +44,9 @@ const TripSummaryBar = ({
   const handleEdit = () => {
     if (onEdit) {
       onEdit();
+    } else if (tripData) {
+      // Navigate to Home with pre-filled data
+      setShowConfirmModal(true);
     } else {
       setShowConfirmModal(true);
     }
@@ -49,12 +54,7 @@ const TripSummaryBar = ({
 
   const handleConfirmReset = () => {
     setShowConfirmModal(false);
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "Home" }],
-      }),
-    );
+    navigation.navigate("Home", { initialData: tripData });
   };
 
   const handleCancelReset = () => {
@@ -91,7 +91,7 @@ const TripSummaryBar = ({
       <ConfirmModal
         visible={showConfirmModal}
         title="Change Trip Details"
-        message="This will reset your trip selection and take you back to the home screen. Are you sure?"
+        message="This will take you back to the home screen with your current trip details pre-filled. You can modify them and search again. Are you sure?"
         onConfirm={handleConfirmReset}
         onCancel={handleCancelReset}
       />

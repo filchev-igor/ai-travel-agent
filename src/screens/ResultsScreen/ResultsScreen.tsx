@@ -29,9 +29,18 @@ const ResultsScreen = ({ route, navigation }: Props) => {
     { label: "Book a journey", sublabel: "Book a\njourney" },
   ];
 
+  // Create a clean tripData object for editing (without any extra fields)
+  const editData = {
+    start: tripData.start,
+    end: tripData.end,
+    startDate: tripData.startDate,
+    endDate: tripData.endDate,
+    group: tripData.group,
+    budget: tripData.budget,
+  };
+
   return (
     <View style={styles.container}>
-      {/* Back button just goes back - NO confirmation */}
       <Header showBack onBackPress={() => navigation.goBack()} />
 
       <ScrollView
@@ -46,6 +55,7 @@ const ResultsScreen = ({ route, navigation }: Props) => {
           group={tripData.group}
           budget={tripData.budget}
           showEdit={true}
+          tripData={editData}
         />
 
         <Stepper steps={steps} currentStep={1} />

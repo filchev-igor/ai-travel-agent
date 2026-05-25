@@ -21,7 +21,7 @@ export interface TripVariant {
 }
 
 export type RootStackParamList = {
-  Home: undefined;
+  Home: { initialData?: TripData } | undefined; // Add optional initialData
   Loading: { tripData: TripData };
   Results: { tripData: TripData; variants: TripVariant[] };
   Reservation: { tripData: TripData; variant: TripVariant };
