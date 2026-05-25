@@ -6,16 +6,29 @@ type Props = {
   variant: TripVariant;
   index: number;
   onPress?: () => void;
+  readonly?: boolean; // New prop for read-only mode
+  customTitle?: string; // Optional custom title (for Reservation/Booking)
 };
 
-const TripCard = ({ variant, index, onPress }: Props) => {
+const TripCard = ({
+  variant,
+  index,
+  onPress,
+  readonly = false,
+  customTitle,
+}: Props) => {
   const formatPrice = (price: number) => `${price} €`;
 
+  const title =
+    customTitle || variant.title || `Trip suggestions - variant ${index + 1}`;
+
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
-      <Text style={styles.title}>
-        {variant.title || `Trip suggestions - variant ${index + 1}`}
-      </Text>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={readonly ? undefined : onPress}
+      activeOpacity={readonly ? 1 : 0.7}
+    >
+      <Text style={styles.title}>{title}</Text>
       <Text style={styles.activities}>Activities: {variant.activities}</Text>
 
       <View style={styles.row}>

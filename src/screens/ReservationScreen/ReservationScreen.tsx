@@ -12,6 +12,7 @@ import { RootStackParamList } from "../../types";
 import Header from "../../components/Header";
 import Stepper from "../../components/Stepper";
 import TripSummaryBar from "../../components/TripSummaryBar";
+import TripCard from "../../components/TripCard";
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Reservation">;
@@ -33,9 +34,10 @@ const ReservationScreen = ({ route, navigation }: Props) => {
   ];
 
   const handleEdit = () => {
-    // Navigate to Home screen to edit trip details
     navigation.navigate("Home");
   };
+
+  const customTitle = `Journey from ${tripData.start} to ${tripData.end}`;
 
   return (
     <View style={styles.container}>
@@ -55,43 +57,12 @@ const ReservationScreen = ({ route, navigation }: Props) => {
 
         <Stepper steps={steps} currentStep={2} />
 
-        <View style={styles.card}>
-          <Text style={styles.title}>
-            Journey from {tripData.start} to {tripData.end}
-          </Text>
-          <Text style={styles.activities}>
-            Activities: {variant.activities}
-          </Text>
-
-          <View style={styles.row}>
-            <Text style={styles.label}>Direct flight</Text>
-            <Text style={styles.value}>{formatPrice(variant.flight)}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Transportation</Text>
-            <Text style={styles.value}>
-              {formatPrice(variant.transportation)}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Hospitality</Text>
-            <Text style={styles.value}>
-              {formatPrice(variant.hospitality)} in an apartment
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>{variant.activity1_name}</Text>
-            <Text style={styles.value}>
-              {formatPrice(variant.activity1_cost)}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>{variant.activity2_name}</Text>
-            <Text style={styles.value}>
-              {formatPrice(variant.activity2_cost)}
-            </Text>
-          </View>
-        </View>
+        <TripCard
+          variant={variant}
+          index={0}
+          readonly={true}
+          customTitle={customTitle}
+        />
 
         <View style={{ height: 20 }} />
       </ScrollView>
@@ -120,50 +91,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingTop: 20,
     paddingBottom: 20,
-  },
-  card: {
-    backgroundColor: "#F2F2ED",
-    borderWidth: 1,
-    borderColor: "#0C1445",
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-  },
-  title: {
-    fontFamily: "Inter",
-    fontWeight: "700",
-    fontSize: 16,
-    lineHeight: 19,
-    color: "#0C1445",
-    marginBottom: 8,
-  },
-  activities: {
-    fontFamily: "Inter",
-    fontWeight: "400",
-    fontSize: 12,
-    lineHeight: 15,
-    color: "#0C1445",
-    marginBottom: 16,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  label: {
-    fontFamily: "Inter",
-    fontWeight: "400",
-    fontSize: 12,
-    lineHeight: 15,
-    color: "#0C1445",
-  },
-  value: {
-    fontFamily: "Inter",
-    fontWeight: "200",
-    fontSize: 12,
-    lineHeight: 15,
-    color: "#0C1445",
   },
   footer: {
     backgroundColor: "#000000",
