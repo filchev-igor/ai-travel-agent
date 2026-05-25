@@ -14,7 +14,7 @@ const buildPrompt = (tripData: TripData): string => {
   console.log("[Gemini] Building prompt for trip:", tripData);
   return `You are an AI travel agent. A user wants to travel from ${start} to ${end} for ${days} days with a budget of €${budget} for ${group} person(s). Travel dates: ${startDate} to ${endDate}.
 
-Generate exactly 3 different trip variants. Each variant should have different activities or accommodation style.
+Generate exactly 3 different trip variants with different activities or accommodation styles.
 
 IMPORTANT: Keep each variant's total cost within the €${budget} budget. All costs in EUR.
 
@@ -92,7 +92,7 @@ export const fetchTripVariants = async (
         contents: [{ parts: [{ text: buildPrompt(tripData) }] }],
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 8192, // Increased to 8192
+          maxOutputTokens: 8192,
         },
       }),
     });
@@ -111,26 +111,23 @@ export const fetchTripVariants = async (
       .replace(/```\s*$/g, "")
       .trim();
 
-    // Try to fix incomplete JSON by finding the last complete variant
-    if (!text.endsWith("}")) {
-      // Find the last complete variant array
-      const lastBracket = text.lastIndexOf("]");
-      if (lastBracket > 0) {
-        text = text.substring(0, lastBracket + 1);
-        // Close the JSON properly
-        if (!text.endsWith("]}")) {
-          text = text + "]}";
-        }
-      }
-    }
+    // Also remove any trailing commas before closing braces (common JSON issue)
+    text = text.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]");
 
     try {
       const parsed: { variants: TripVariant[] } = JSON.parse(text);
-      console.log("[Gemini] Parsed", parsed.variants.length, "variants");
+      console.log(
+        "[Gemini] Successfully parsed",
+        parsed.variants.length,
+        "variants",
+      );
       return parsed.variants;
     } catch (parseError) {
       console.error("[Gemini] JSON parse error:", parseError);
-      console.log("[Gemini] Raw text that failed to parse:", text);
+      console.log(
+        "[Gemini] Raw text that failed to parse:",
+        text.substring(0, 500),
+      );
       return generateFallback(tripData);
     }
   } catch (error) {

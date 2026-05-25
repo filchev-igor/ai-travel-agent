@@ -29,7 +29,7 @@ const BookingScreen = ({ route, navigation }: Props) => {
     });
   };
 
-  const formatPrice = (price: number) => `${price}€`;
+  const formatPrice = (price: number) => `${price} €`;
 
   const steps = [
     { label: "Browse journeys", sublabel: "Browse journeys" },
@@ -62,7 +62,7 @@ const BookingScreen = ({ route, navigation }: Props) => {
             </View>
             <View style={styles.tripDetailItem}>
               <DollarSign size={12} color="#0C1445" strokeWidth={2} />
-              <Text style={styles.tripDetailText}>{tripData.budget}€</Text>
+              <Text style={styles.tripDetailText}>{tripData.budget} €</Text>
             </View>
           </View>
         </View>

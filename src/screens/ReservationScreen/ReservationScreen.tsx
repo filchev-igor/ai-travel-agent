@@ -29,7 +29,7 @@ const ReservationScreen = ({ route, navigation }: Props) => {
     });
   };
 
-  const formatPrice = (price: number) => `${price}€`;
+  const formatPrice = (price: number) => `${price} €`;
 
   const steps = [
     { label: "Browse journeys", sublabel: "Browse journeys" },

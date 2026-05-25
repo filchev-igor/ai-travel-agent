@@ -71,8 +71,9 @@ const ResultsScreen = ({ route, navigation }: Props) => {
             </View>
             <View style={styles.tripDetailItem}>
               <DollarSign size={12} color="#0C1445" strokeWidth={2} />
-              <Text style={styles.tripDetailText}>{tripData.budget}€</Text>
+              <Text style={styles.tripDetailText}>{tripData.budget} €</Text>
             </View>
+
             <Edit2 size={14} color="#0C1445" strokeWidth={2} />
           </View>
         </TouchableOpacity>

@@ -9,7 +9,7 @@ type Props = {
 };
 
 const TripCard = ({ variant, index, onPress }: Props) => {
-  const formatPrice = (price: number) => `${price}€`;
+  const formatPrice = (price: number) => `${price} €`;
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
